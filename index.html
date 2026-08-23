@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Learning Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-content">
+      <div>
+        <h1>Developer Learning Dashboard</h1>
+        <p class="subtitle">Phase 1 Foundation &bull; Self-Regulated Engineering Log</p>
+            </div>
+      <div id="quick-status" class="quick-status">
+        <span class="badge">Local Persistence Active</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container app-main">
+    <!-- 1. Overview Section -->
+    <section id="overview" aria-labelledby="overview-heading" class="card">
+      <h2 id="overview-heading" class="section-title">Execution Metrics</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Total Tasks</span>
+          <span id="metric-total-tasks" class="metric-value">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Completion Rate</span>
+          <span id="metric-completion-rate" class="metric-value">0%</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Problems Solved</span>
+          <span id="metric-problems-solved" class="metric-value">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Logged Study Hours</span>
+          <span id="metric-study-hours" class="metric-value">0.0h</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="two-col-layout">
+      <!-- 2. Task Management Section -->
+      <section id="tasks-section" aria-labelledby="tasks-heading" class="card">
+        <div class="section-header">
+          <h2 id="tasks-heading" class="section-title">Milestones & Tasks</h2>
+          <div class="filters">
+            <label for="task-filter" class="sr-only">Filter tasks</label>
+            <select id="task-filter" class="input-select">
+              <option value="all">All Tasks</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <form id="task-form" class="form-grid">
+          <div class="form-group">
+            <label for="task-title">Task Description</label>
+            <input type="text" id="task-title" required placeholder="e.g., Build semantic layout for dashboard" class="input-text">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="task-category">Category</label>
+              <select id="task-category" class="input-select">
+                <option value="Core Coding">Core Coding</option>
+                <option value="DSA">DSA</option>
+                <option value="Linux/Git">Linux/Git</option>
+                <option value="Architecture">Architecture</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority" class="input-select">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Task</button>
+        </form>
+
+        <ul id="task-list" class="item-list" aria-live="polite"></ul>
+      </section>
+
+      <!-- 3. Coding Problem Tracker -->
+      <section id="problems-section" aria-labelledby="problems-heading" class="card">
+        <h2 id="problems-heading" class="section-title">DSA Problem Log</h2>
+        <form id="problem-form" class="form-grid">
+          <div class="form-group">
+            <label for="problem-title">Problem Name</label>
+            <input type="text" id="problem-title" required placeholder="e.g., Two Sum" class="input-text">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="problem-platform">Platform</label>
+              <select id="problem-platform" class="input-select">
+                <option value="LeetCode">LeetCode</option>
+                <option value="HackerRank">HackerRank</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="problem-difficulty">Difficulty</label>
+              <select id="problem-difficulty" class="input-select">
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="problem-notes">Key Takeaway / Pattern</label>
+            <input type="text" id="problem-notes" placeholder="e.g., Hash map complement lookup in O(n)" class="input-text">
+          </div>
+          <button type="submit" class="btn btn-primary">Log Problem</button>
+        </form>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Problem</th>
+                <th>Platform</th>
+                <th>Difficulty</th>
+                <th>Notes</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="problems-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- 4. Learning Log Section -->
+    <section id="logs-section" aria-labelledby="logs-heading" class="card">
+      <h2 id="logs-heading" class="section-title">Deep Work & Study Logs</h2>
+      <form id="log-form" class="form-inline-grid">
+        <div class="form-group">
+          <label for="log-topic">Topic Explored</label>
+          <input type="text" id="log-topic" required placeholder="e.g., Event delegation & closures" class="input-text">
+        </div>
+        <div class="form-group">
+          <label for="log-duration">Duration (Hours)</label>
+          <input type="number" id="log-duration" step="0.5" min="0.5" max="12" required placeholder="1.5" class="input-text">
+        </div>
+        <div class="form-group span-two">
+          <label for="log-summary">Technical Summary & Mistakes</label>
+          <input type="text" id="log-summary" required placeholder="What failed, what worked, and how it was fixed" class="input-text">
+        </div>
+        <button type="submit" class="btn btn-primary btn-align-end">Record Session</button>
+      </form>
+
+      <div id="log-entries" class="log-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 Developer Learning Dashboard &bull; Semantic HTML &amp; CSS Layout.</p>
+      <button id="btn-export-data" class="btn btn-secondary">Export State JSON</button>
+    </div>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
