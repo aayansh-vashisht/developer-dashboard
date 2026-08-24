@@ -5,8 +5,8 @@ A client-side developer productivity dashboard designed to track software engine
 ---
 
 ## Live Demo & Repository
-* **Live Application**: [https://yourusername.github.io/developer-dashboard/](https://github.com)
-* **Source Code**: [https://github.com/yourusername/developer-dashboard](https://github.com)
+* **Live Application**: https://aayansh-vashisht.github.io/developer-dashboard/
+* **Source Code**: https://github.com/aayansh-vashisht/developer-dashboard.git
 
 ---
 
