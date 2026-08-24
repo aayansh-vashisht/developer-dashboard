@@ -1,6 +1,7 @@
 import {
   loadState,
   saveState,
+  importStateData,
   addTask,
   toggleTask,
   deleteTask,
@@ -8,7 +9,10 @@ import {
   deleteProblem,
   addLog,
   deleteLog,
-  setTaskFilter
+  setTaskFilter,
+  setTaskSearch,
+  setTaskSort,
+  toggleTheme
 } from './state.js';
 
 import { renderDashboard } from './render.js';
@@ -24,51 +28,102 @@ function update(newState) {
 document.addEventListener('DOMContentLoaded', () => {
   renderDashboard(appState);
 
-  // Form: Add Task
+  // 1. Theme Switcher
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      update(toggleTheme(appState));
+    });
+  }
+
+  // 2. Task Form Submission
   const taskForm = document.getElementById('task-form');
-  taskForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('task-title').value;
-    const category = document.getElementById('task-category').value;
-    const priority = document.getElementById('task-priority').value;
+  if (taskForm) {
+    taskForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const titleInput = document.getElementById('task-title');
+      const categoryInput = document.getElementById('task-category');
+      const priorityInput = document.getElementById('task-priority');
 
-    update(addTask(appState, { title, category, priority }));
-    taskForm.reset();
-  });
+      if (!titleInput.value.trim()) return;
 
-  // Filter: Task status
+      update(addTask(appState, {
+        title: titleInput.value,
+        category: categoryInput.value,
+        priority: priorityInput.value
+      }));
+      taskForm.reset();
+    });
+  }
+
+  // 3. Task Filters, Search & Sort
   const taskFilter = document.getElementById('task-filter');
-  taskFilter.value = appState.taskFilter;
-  taskFilter.addEventListener('change', (e) => {
-    update(setTaskFilter(appState, e.target.value));
-  });
+  if (taskFilter) {
+    taskFilter.value = appState.taskFilter;
+    taskFilter.addEventListener('change', (e) => {
+      update(setTaskFilter(appState, e.target.value));
+    });
+  }
 
-  // Form: Log Problem
+  const taskSearch = document.getElementById('task-search');
+  if (taskSearch) {
+    taskSearch.value = appState.taskSearch;
+    taskSearch.addEventListener('input', (e) => {
+      update(setTaskSearch(appState, e.target.value));
+    });
+  }
+
+  const taskSort = document.getElementById('task-sort');
+  if (taskSort) {
+    taskSort.value = appState.taskSort;
+    taskSort.addEventListener('change', (e) => {
+      update(setTaskSort(appState, e.target.value));
+    });
+  }
+
+  // 4. Problem Log Form
   const problemForm = document.getElementById('problem-form');
-  problemForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const title = document.getElementById('problem-title').value;
-    const platform = document.getElementById('problem-platform').value;
-    const difficulty = document.getElementById('problem-difficulty').value;
-    const notes = document.getElementById('problem-notes').value;
+  if (problemForm) {
+    problemForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const titleInput = document.getElementById('problem-title');
+      const platformInput = document.getElementById('problem-platform');
+      const difficultyInput = document.getElementById('problem-difficulty');
+      const notesInput = document.getElementById('problem-notes');
 
-    update(addProblem(appState, { title, platform, difficulty, notes }));
-    problemForm.reset();
-  });
+      if (!titleInput.value.trim()) return;
 
-  // Form: Learning Log
+      update(addProblem(appState, {
+        title: titleInput.value,
+        platform: platformInput.value,
+        difficulty: difficultyInput.value,
+        notes: notesInput.value
+      }));
+      problemForm.reset();
+    });
+  }
+
+  // 5. Deep Work Log Form
   const logForm = document.getElementById('log-form');
-  logForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const topic = document.getElementById('log-topic').value;
-    const duration = document.getElementById('log-duration').value;
-    const summary = document.getElementById('log-summary').value;
+  if (logForm) {
+    logForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const topicInput = document.getElementById('log-topic');
+      const durationInput = document.getElementById('log-duration');
+      const summaryInput = document.getElementById('log-summary');
 
-    update(addLog(appState, { topic, duration, summary }));
-    logForm.reset();
-  });
+      if (!topicInput.value.trim()) return;
 
-  // Event Delegation: Task, Problem, and Log Actions
+      update(addLog(appState, {
+        topic: topicInput.value,
+        duration: durationInput.value,
+        summary: summaryInput.value
+      }));
+      logForm.reset();
+    });
+  }
+
+  // 6. Action Delegation (Toggle / Delete)
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
     const id = e.target.dataset.id;
@@ -80,14 +135,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (action === 'delete-log') update(deleteLog(appState, id));
   });
 
-  // Export State JSON
-  document.getElementById('btn-export-data').addEventListener('click', () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `dashboard_state_${Date.now()}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-  });
+  // 7. JSON Export
+  const exportBtn = document.getElementById('btn-export-data');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `dashboard_state_${Date.now()}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    });
+  }
+
+  // 8. JSON Import
+  const fileInput = document.getElementById('import-file-input');
+  const importTriggerBtn = document.getElementById('btn-import-trigger');
+  if (fileInput && importTriggerBtn) {
+    importTriggerBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const importedState = importStateData(appState, event.target.result);
+          update(importedState);
+        } catch (err) {
+          alert('Invalid JSON file schema. Import cancelled.');
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = '';
+    });
+  }
 });

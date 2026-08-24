@@ -1,28 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Developer Learning Dashboard</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
   <header class="app-header">
     <div class="container header-content">
       <div>
         <h1>Developer Learning Dashboard</h1>
-        <p class="subtitle">Phase 1 Foundation &bull; Self-Regulated Engineering Log</p>
-            </div>
-      <div id="quick-status" class="quick-status">
-        <span class="badge">Local Persistence Active</span>
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="btn btn-secondary" type="button" aria-label="Toggle visual theme">
+          <span id="theme-icon">☀️</span> <span id="theme-text">Light Mode</span>
+        </button>
       </div>
     </div>
   </header>
 
   <main class="container app-main">
-    <!-- 1. Overview Section -->
+    <!-- 1. Metrics & Execution Summary -->
     <section id="overview" aria-labelledby="overview-heading" class="card">
-      <h2 id="overview-heading" class="section-title">Execution Metrics</h2>
+      <div class="section-header">
+        <h2 id="overview-heading" class="section-title">Execution Overview</h2>
+        <div class="streak-badge" id="streak-indicator">
+          🔥 <span id="metric-streak-count">0</span> Day Streak
+        </div>
+      </div>
+
       <div class="metrics-grid">
         <div class="metric-card">
           <span class="metric-label">Total Tasks</span>
@@ -41,19 +50,38 @@
           <span id="metric-study-hours" class="metric-value">0.0h</span>
         </div>
       </div>
+
+      <div class="progress-container">
+        <div class="progress-header">
+          <span class="progress-title">Milestone Completion Progress</span>
+          <span id="progress-percentage-label">0%</span>
+        </div>
+        <div class="progress-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+      </div>
     </section>
 
     <div class="two-col-layout">
       <!-- 2. Task Management Section -->
       <section id="tasks-section" aria-labelledby="tasks-heading" class="card">
         <div class="section-header">
-          <h2 id="tasks-heading" class="section-title">Milestones & Tasks</h2>
-          <div class="filters">
-            <label for="task-filter" class="sr-only">Filter tasks</label>
-            <select id="task-filter" class="input-select">
-              <option value="all">All Tasks</option>
+          <h2 id="tasks-heading" class="section-title">Tasks &amp; Milestones</h2>
+        </div>
+
+        <div class="toolbar">
+          <input type="search" id="task-search" placeholder="Search tasks..." class="input-text search-input"
+            aria-label="Search tasks">
+          <div class="toolbar-controls">
+            <select id="task-filter" class="input-select" aria-label="Filter tasks by status">
+              <option value="all">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
+            </select>
+            <select id="task-sort" class="input-select" aria-label="Sort tasks">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="priority">High Priority</option>
             </select>
           </div>
         </div>
@@ -61,7 +89,8 @@
         <form id="task-form" class="form-grid">
           <div class="form-group">
             <label for="task-title">Task Description</label>
-            <input type="text" id="task-title" required placeholder="e.g., Build semantic layout for dashboard" class="input-text">
+            <input type="text" id="task-title" required placeholder="e.g., Implement defensive schema parsing"
+              class="input-text">
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -93,8 +122,8 @@
         <h2 id="problems-heading" class="section-title">DSA Problem Log</h2>
         <form id="problem-form" class="form-grid">
           <div class="form-group">
-            <label for="problem-title">Problem Name</label>
-            <input type="text" id="problem-title" required placeholder="e.g., Two Sum" class="input-text">
+            <label for="problem-title">Problem Title</label>
+            <input type="text" id="problem-title" required placeholder="e.g., Valid Palindrome" class="input-text">
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -115,8 +144,9 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="problem-notes">Key Takeaway / Pattern</label>
-            <input type="text" id="problem-notes" placeholder="e.g., Hash map complement lookup in O(n)" class="input-text">
+            <label for="problem-notes">Pattern / Takeaway</label>
+            <input type="text" id="problem-notes" placeholder="e.g., Two-pointer scan with alphanumeric sanitization"
+              class="input-text">
           </div>
           <button type="submit" class="btn btn-primary">Log Problem</button>
         </form>
@@ -138,23 +168,25 @@
       </section>
     </div>
 
-    <!-- 4. Learning Log Section -->
+    <!-- 4. Deep Work & Study Logs -->
     <section id="logs-section" aria-labelledby="logs-heading" class="card">
-      <h2 id="logs-heading" class="section-title">Deep Work & Study Logs</h2>
+      <h2 id="logs-heading" class="section-title">Deep Work &amp; Study Sessions</h2>
       <form id="log-form" class="form-inline-grid">
         <div class="form-group">
-          <label for="log-topic">Topic Explored</label>
-          <input type="text" id="log-topic" required placeholder="e.g., Event delegation & closures" class="input-text">
+          <label for="log-topic">Topic / Module</label>
+          <input type="text" id="log-topic" required placeholder="e.g., Event Loop &amp; Closures" class="input-text">
         </div>
         <div class="form-group">
           <label for="log-duration">Duration (Hours)</label>
-          <input type="number" id="log-duration" step="0.5" min="0.5" max="12" required placeholder="1.5" class="input-text">
+          <input type="number" id="log-duration" step="0.5" min="0.5" max="12" required placeholder="1.5"
+            class="input-text">
         </div>
         <div class="form-group span-two">
-          <label for="log-summary">Technical Summary & Mistakes</label>
-          <input type="text" id="log-summary" required placeholder="What failed, what worked, and how it was fixed" class="input-text">
+          <label for="log-summary">Technical Summary &amp; Edge Cases</label>
+          <input type="text" id="log-summary" required
+            placeholder="Root cause of bugs found, solutions applied, and takeaways" class="input-text">
         </div>
-        <button type="submit" class="btn btn-primary btn-align-end">Record Session</button>
+        <button type="submit" class="btn btn-primary btn-align-end">Record Log</button>
       </form>
 
       <div id="log-entries" class="log-grid" aria-live="polite"></div>
@@ -163,11 +195,16 @@
 
   <footer class="app-footer">
     <div class="container footer-content">
-      <p>&copy; 2026 Developer Learning Dashboard &bull; Semantic HTML &amp; CSS Layout.</p>
-      <button id="btn-export-data" class="btn btn-secondary">Export State JSON</button>
+      <p>Developer Learning Dashboard &bull; Semantic HTML, CSS Variables, &amp; Vanilla JS[cite: 2].</p>
+      <div class="footer-actions">
+        <input type="file" id="import-file-input" accept=".json" class="sr-only" aria-label="Upload JSON file">
+        <button id="btn-import-trigger" class="btn btn-secondary" type="button">Import JSON</button>
+        <button id="btn-export-data" class="btn btn-secondary" type="button">Export JSON</button>
+      </div>
     </div>
   </footer>
 
   <script type="module" src="js/app.js"></script>
 </body>
+
 </html>
